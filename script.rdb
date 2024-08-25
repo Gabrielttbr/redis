@@ -1,0 +1,109 @@
+# Salva um registro simple com chave e valor
+SET "resultado:2024-09-01:megasena" "12,36,15,65,65,58"
+# inserir multiplos registros simples
+MSET "chave1" "valor1" "chave2" "valor2"
+
+#setar chaves e valores de objetos
+HSET "resultado:2024-08-01:megasena" "numeros" "3,21,55,36,21,14" "ganhadores" "23"
+
+#insert em massa no redis
+HMSET "nome_completo" "primeiro_nome" "gabriel" "sobrenome" "carlos cavalcante"
+
+#list todas as chaves
+KEYS *
+
+# Buscar o resultado de um chave que não tem objeto como valor
+GET "resultado:2024-08-02:megasena"
+
+#Buscar o valor de uma chave dentro do valor de objeto
+HGET "resultado:2024-08-01:megasena" ganhadores
+
+##Pegar todo o objeto 
+HGETALL "nome_completo"
+
+#Para buscar qualquer coisa depos de determinada string/
+KEYS "resultado:2024-08-0*" 
+
+#Quando vc necessidade que tenha apenas um só caracter
+KEYS "resultado:2024-08-0?:megasena"
+
+
+#para buscar um resultado ou outro
+#dentro do [] podemos encontrar chaves com 1 ou 2
+ KEYS "resultado:2024-08-0[12]:megasena"
+
+
+
+# PARA UM REGISTRO APAGAR DEPOIS DE DETERMINADO TEMPO
+EXPIRE "sessao:usuario:01" 
+# para verificar o tempo que falta para expirar
+TTL "sessao:usuario:01"
+
+#hash no redis são como dicionarios
+{
+    "pai_com_dados":
+        "filho": 
+            "idade": "36"
+             "nome": "gabriel" 
+}
+
+# Aumenta um na chave
+INCR "quantidades_acessos_site"
+
+# Diminuir um na chave
+DECR "quantidades_acessos_site"
+
+# Soma o valor 
+INCRBY "quantidades_acessos_site" 20
+
+# Substrair 
+
+DECRBY "quantidades_acessos_site" 7
+
+# Somar com float
+
+INCRBYFLOAT "quantidades_acessos_site" 20.14
+
+# Para armazenar um float ocupando um bit da memória 
+SETBIT "acesso:2024-08-22" 1 1 
+
+KEYS *
+
+# Ele vai armazer um bit na memória, falando que o usuário 1 entrou no sistema no dia 27
+
+SETBIT "acesso:2024-08-27" 1 1
+
+# PEGA O BIT DO USUÁRIO 2 ACESSO O SITEMA NO DIA 02
+GETBIT "acesso:2024-08-22" 2
+
+# COMO EXTRAIR A INFORMAÇÃO QUE QUANTOS USUÁRIOS ENTRARM NO SISTEMA EM UM DIA X? Usando esse armazenamento em BIT
+BITCOUNT "acesso:2024-08-25"
+
+
+# PARA REALIZAR OPERAÇÕES LÓGICAS COM BITS DENTRO REDIS, USAMOS A PALAVRA CHAVE 'BITTOP AND "nome_resultado" CHEVES COMPARADAS
+# EXEMPLO 
+
+SETBIT "acesso:2024-08-25" 1 1
+SETBIT "acesso:2024-08-25" 2 1
+SETBIT "acesso:2024-08-25" 3 1
+
+SETBIT "acesso:2024-08-26" 1 1
+SETBIT "acesso:2024-08-26" 2 0
+SETBIT "acesso:2024-08-26" 3 1
+
+# COMO SABER QUAIS USUÁRIOS ACESSARAM NO DIA 25 E 26 SEGUIDAMENETE:
+# LEMBRANDO QUE CHAVE E REFERÊNTE AO ID DO USUÁRIO
+
+BITOP AND "acesso:2024-08-25-and-26-v2" "acesso:2024-08-25" "acesso:2024-08-26"
+
+# PARA DESCOBRIR O TOTAL DE USUÁRIO QUE ACESSARAM NOS DOIS DIAS, BASTA DIGITAL:
+BITCOUNT "acesso:2024-08-25-and-26-v2"
+# ELE DEVE RETORNAR DOIS, POIS OS USUÁRIOS 3 E 1 ACESSAR DOIS DIAS SEGUINTES
+
+# MAIS QUAIS USUÁRIO, ACESSAR NESSE DIA? 
+# PARA DESCOBRIR ISSO PRECISA MEIO QUE IR CHUTANDO AS CHAVES EXEMPLOS:
+GETBIT "acesso:2024-08-25-and-26-v2" 1
+GETBIT "acesso:2024-08-25-and-26-v2" 2
+GETBIT "acesso:2024-08-25-and-26-v2" 3
+
+
